@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Crate — your Drive, ad-free</title>
+<meta name="description" content="A personal, ad-free music player that streams from your own Google Drive." />
+<meta name="theme-color" content="#14161c" />
+<link rel="manifest" href="manifest.json" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Crate" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%2314161c%22/><circle cx=%2250%22 cy=%2250%22 r=%2226%22 fill=%22none%22 stroke=%22%23e8a33d%22 stroke-width=%226%22/><circle cx=%2250%22 cy=%2250%22 r=%226%22 fill=%22%23e8a33d%22/></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Sign-in gate -->
+  <section id="gate" class="gate">
+    <div class="gate-mark">
+      <svg viewBox="0 0 100 100" width="56" height="56" aria-hidden="true">
+        <circle cx="50" cy="50" r="34" fill="none" stroke="currentColor" stroke-width="6"/>
+        <circle cx="50" cy="50" r="6" fill="currentColor"/>
+      </svg>
+    </div>
+    <h1>Crate</h1>
+    <p class="gate-sub">Your own library. No ad breaks, no algorithm — just the folder you already have in Drive.</p>
+    <button id="signin-btn" class="btn-primary">Connect Google Drive</button>
+    <p id="gate-status" class="gate-status" aria-live="polite"></p>
+    <p class="gate-fine">Playback happens directly between this device and Drive. Nothing is uploaded anywhere else.</p>
+  </section>
+
+  <!-- Main app -->
+  <main id="app" class="app hidden">
+    <header class="topbar">
+      <div class="topbar-title">
+        <span class="topbar-mark">
+          <svg viewBox="0 0 100 100" width="20" height="20" aria-hidden="true">
+            <circle cx="50" cy="50" r="34" fill="none" stroke="currentColor" stroke-width="8"/>
+            <circle cx="50" cy="50" r="8" fill="currentColor"/>
+          </svg>
+        </span>
+        Crate
+      </div>
+      <button id="signout-btn" class="btn-ghost" title="Disconnect">Disconnect</button>
+    </header>
+
+    <div class="search-row">
+      <input id="search-input" type="search" placeholder="Filter your library…" autocomplete="off" />
+      <select id="sort-select" aria-label="Sort by">
+        <option value="name">Name</option>
+        <option value="recent">Recently added</option>
+      </select>
+    </div>
+
+    <section id="library" class="library" aria-label="Your tracks"></section>
+
+    <p id="empty-state" class="empty-state hidden">
+      No audio files found in this Drive account.<br/>Add some mp3, m4a or flac files to your Drive and refresh.
+    </p>
+    <p id="loading-state" class="loading-state">Reading your library…</p>
+  </main>
+
+  <!-- Mini player -->
+  <button id="mini-player" class="mini-player hidden" aria-label="Open now playing">
+    <span id="mini-art" class="mini-art"></span>
+    <span class="mini-meta">
+      <span id="mini-title" class="mini-title">—</span>
+      <span id="mini-artist" class="mini-artist">—</span>
+    </span>
+    <span class="mini-controls">
+      <button id="mini-playpause" class="icon-btn" title="Play/Pause" onclick="event.stopPropagation()"></button>
+    </span>
+  </button>
+
+  <!-- Now playing sheet -->
+  <section id="now-playing" class="now-playing hidden" aria-label="Now playing">
+    <button id="collapse-btn" class="collapse-btn" aria-label="Collapse">︾</button>
+    <div id="np-art" class="np-art"></div>
+    <div class="np-meta">
+      <h2 id="np-title" class="np-title">—</h2>
+      <p id="np-artist" class="np-artist">—</p>
+    </div>
+
+    <div class="scrubber">
+      <input id="seek" type="range" min="0" max="1000" value="0" />
+      <div class="time-row">
+        <span id="time-current">0:00</span>
+        <span id="time-total">0:00</span>
+      </div>
+    </div>
+
+    <div class="transport">
+      <button id="shuffle-btn" class="icon-btn small" title="Shuffle">⤨</button>
+      <button id="prev-btn" class="icon-btn" title="Previous">⏮</button>
+      <button id="playpause-btn" class="icon-btn big" title="Play/Pause">▶</button>
+      <button id="next-btn" class="icon-btn" title="Next">⏭</button>
+      <button id="repeat-btn" class="icon-btn small" title="Repeat">⟲</button>
+    </div>
+
+    <div class="volume-row">
+      <span aria-hidden="true">🔉</span>
+      <input id="volume" type="range" min="0" max="1" step="0.01" value="1" />
+    </div>
+
+    <p id="np-status" class="np-status" aria-live="polite"></p>
+  </section>
+
+  <audio id="audio-el" preload="none"></audio>
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="app.js"></script>
+</body>
+</html>
